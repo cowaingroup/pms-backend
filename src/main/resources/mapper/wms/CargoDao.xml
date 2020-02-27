@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.CargoDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.CargoEntity" id="cargoMap">
+        <result property="id" column="id"/>
+        <result property="cargoName" column="cargo_name"/>
+        <result property="cargoCode" column="cargo_code"/>
+        <result property="ownerName" column="owner_name"/>
+        <result property="loadingArea" column="loading_area"/>
+        <result property="unit" column="unit"/>
+        <result property="creatTime" column="creat_time"/>
+    </resultMap>
+    <select id="palletPageList" resultMap="cargoMap">
+        SELECT b.area_name as loading_area,
+         a.id,
+        a.cargo_name ,
+        a.cargo_code ,
+        c.owner_name as owner_name ,
+        a.unit,
+        a.creat_time
+          FROM t_cargo a LEFT  JOIN t_wh_area b
+        ON a.loading_area = b.area_code
+        left join t_owner_info c
+        on a.owner_name = c.owner_code
+        where  1=1
+        <if test="map.cargoName!=null and map.cargoName!=''">
+            and a.cargo_name=#{map.cargoName}
+        </if>
+        <if test="map.cargoCode!=null and map.cargoCode!=''">
+            and a.cargo_code= #{map.cargoCode}
+        </if>
+        order by a.creat_time desc
+    </select>
+    <select id="getCargoNameAll" resultMap="cargoMap">
+        SELECT DISTINCT cargo_name, cargo_code FROM t_cargo
+    </select>
+    <select id="getLoadingAreaByCargoName" resultMap="cargoMap">
+        SELECT DISTINCT b.area_name as loading_area
+        FROM t_cargo a LEFT  JOIN t_wh_area b
+        ON a.loading_area = b.area_code
+         WHERE cargo_code=#{cargoCode}
+    </select>
+    <select id="cargoIsUser" resultMap="cargoMap">
+        SELECT id FROM t_cargo WHERE(cargo_name=#{cargoName} or cargo_code= #{cargoCode})
+    </select>
+
+</mapper>

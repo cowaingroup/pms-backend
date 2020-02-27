@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.MaterialsDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.MaterialsEntity" id="materialsMap">
+        <result property="id" column="id"/>
+        <result property="materialNumber" column="material_number"/>
+        <result property="describe" column="describe"/>
+        <result property="cargoName" column="cargo_name"/>
+        <result property="loadingArea" column="loading_area"/>
+        <result property="materialName" column="material_name"/>
+        <result property="unit" column="unit"/>
+        <result property="creatTime" column="creat_time"/>
+    </resultMap>
+    <select id="palletPageList" resultMap="materialsMap">
+        SELECT
+        a.id,
+        a.material_number,
+        a.describe,
+        b.cargo_name as cargo_name,
+        a.loading_area,
+        a.material_name,
+        a.unit,
+        a.creat_time
+         FROM t_materials a left join t_cargo b
+        on a.cargo_name = b.cargo_code
+        where  1=1
+        <if test="map.materialNumber!=null and map.materialNumber!=''">
+            and a.material_number=#{map.materialNumber}
+        </if>
+        <if test="map.materialName!=null and map.materialName!=''">
+            and a.material_name= #{map.materialName}
+        </if>
+        order by a.creat_time desc
+    </select>
+    <select id="materialsIsUser" resultMap="materialsMap">
+        SELECT id FROM t_materials WHERE material_number = #{materialNumber}
+    </select>
+</mapper>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.pms.dao.PmsAlarmDao">
+
+    <select id="queryPariortys" resultType="com.cowain.pms.modules.pms.entity.PmsDictEntity">
+        SELECT * FROM `t_dict` where type = 'PRIORITY'
+    </select>
+    <select id="queryMsgTypes" resultType="com.cowain.pms.modules.pms.entity.PmsPushMsgEntity">
+           SELECT * FROM t_msg_rule
+    </select>
+
+    <select id="queryDays" resultType="com.cowain.pms.modules.pms.entity.PmsDictEntity">
+        SELECT * FROM `t_dict` where type = 'CAUTION_DAY'
+    </select>
+    <select id="queryAlarmCategorys" resultType="com.cowain.pms.modules.pms.entity.PmsDictEntity">
+        SELECT * FROM `t_dict` where type = 'CAUTION'
+    </select>
+
+
+    <select id="selectAlarmPageList" resultType="com.cowain.pms.modules.pms.dto.PmsAlarmEntityDto">
+         select
+            m.id,
+            m.rule_name,
+            t1.`explain` 'day',
+            t2.`explain` 'upgradeDay',
+            t3.`explain` 'prioritys',
+            t4.`explain` 'alarmTypes',
+            t5.`msg_type` 'msgTypes'
+            FROM (SELECT * from t_alarm_rule) m
+            LEFT JOIN t_dict t1 on m.days = t1.code
+            LEFT JOIN t_dict t2 on m.upgrade_days = t2.code
+            LEFT JOIN t_dict t3 on m.priority = t3.code
+            LEFT JOIN t_dict t4 on m.alarm_type = t4.code
+            LEFT JOIN t_msg_rule t5 on m.msg_type = t5.id
+			ORDER BY m.id
+
+    </select>
+
+    <select id="queryMsgType" resultType="java.lang.Integer">
+        select code from t_dict where `code` = #{msgTypes}
+    </select>
+    <select id="queryAlarmType" resultType="java.lang.Integer">
+        select code from t_dict where `code` = #{alarmTypes}
+    </select>
+    <select id="queryPriority" resultType="java.lang.Integer">
+        select code from t_dict where `explain` = #{prioritys}
+    </select>
+
+    <select id="queryDay" resultType="java.lang.Integer">
+SELECT code from t_dict where  `explain` = #{upgradeDays}
+    </select>
+
+</mapper>

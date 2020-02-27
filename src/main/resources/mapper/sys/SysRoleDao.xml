@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.sys.dao.SysRoleDao">
+
+	<!-- 查询用户创建的角色ID列表 -->
+	<select id="queryRoleIdList" resultType="long">
+		select role_id from t_pms_role where create_user_id = #{createUserId}
+	</select>
+
+	<select id="selectRoleIdList" resultType="long">
+		select role_id from t_pms_role where role_Name in
+		<foreach collection="array" open="(" close=")" separator="," item="roleName" >
+			#{roleName}
+		</foreach>
+	</select>
+
+	<!--查询角色id-->
+	<select id="queryRole" resultType="int">
+		SELECT `status` FROM `t_pms_role` where role_id = #{roleId}
+	</select>
+
+	<select id="selectRolePageList" resultType="com.cowain.pms.modules.pms.dto.PmsRoleDto">
+		SELECT
+		m.role_id,
+		m.role_code,
+		m.role_name,
+		COUNT( m.user_id ) as 'count_num',
+		m.`status`,
+		t4.`explain` as 'roleTypes',
+		t5.`explain` as 'orgType'
+		FROM
+		( SELECT a.*, b.user_id FROM t_pms_role a LEFT JOIN t_pms_user_role b ON a.role_id = b.role_id ) m
+		LEFT JOIN t_dict t4 on m.role_type = t4.`code`
+		LEFT JOIN t_dict t5 on m.subordinate = t5.`code`
+		<where>
+			<if test="param.roleName!=null and param.roleName!=''">
+				AND m.role_name like concat('%',#{param.roleName},'%')
+			</if>
+		</where>
+		GROUP BY
+		m.role_name
+		HAVING m.`status` != 3
+		ORDER BY count_num desc
+	</select>
+
+	<!--修改状态-->
+	<update id="updateStatus">
+			UPDATE t_pms_role set `status` = #{status} where role_id = #{roleId}
+	</update>
+
+	<select id="seekRole" resultType="com.cowain.pms.modules.sys.entity.SysRoleEntity">
+		select * from t_pms_role where role_id = #{roleId}
+	</select>
+
+	<select id="queryOrg" resultType="java.lang.Integer">
+		SELECT code from  t_dict where `explain` = #{orgType}
+	</select>
+	<select id="queryRoleType" resultType="java.lang.Integer">
+        SELECT code from  t_dict where `explain` = #{roleTypes}
+	</select>
+
+	<select id="queryRoleTypes" resultType="java.lang.Integer">
+		SELECT code from  t_dict where code = #{roleTypes}
+	</select>
+
+	<select id="queryOrgs" resultType="java.lang.Integer">
+		SELECT code from  t_dict where code = #{orgType}
+	</select>
+
+
+</mapper>

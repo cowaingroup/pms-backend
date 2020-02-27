@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.enterdao.WmsInAclogDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.enterentity.WmsInAclogEntity" id="wmsInAclogMap">
+        <result property="id" column="id"/>
+        <result property="actType" column="act_type"/>
+        <result property="wmsDocNo" column="wms_doc_no"/>
+        <result property="globalId" column="global_id"/>
+        <result property="itemCode" column="item_code"/>
+        <result property="itemDesc" column="item_desc"/>
+        <result property="itemNum" column="item_num"/>
+        <result property="positionCode" column="position_code"/>
+        <result property="checkResult" column="check_result"/>
+        <result property="returnStatus" column="return_status"/>
+        <result property="actTime" column="act_time"/>
+        <result property="returnTime" column="return_time"/>
+        <result property="actUser" column="act_user"/>
+        <result property="returnTime" column="return_time"/>
+    </resultMap>
+
+    <select id="selectActLogByGlobalId" resultMap="wmsInAclogMap">
+        select *  from wms_in_act_log where global_id=#{globalId} order BY act_time
+    </select>
+</mapper>

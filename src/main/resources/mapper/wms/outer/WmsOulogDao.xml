@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.outerdao.WmsOulogDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.outerentity.WmsOulogEntity" id="wmsOulogMap">
+        <result property="id" column="id"/>
+        <result property="actType" column="act_type"/>
+        <result property="actTime" column="act_time"/>
+        <result property="userId" column="user_id"/>
+        <result property="wmsDocNo" column="wms_doc_no"/>
+        <result property="erpDocNo" column="erp_doc_no"/>
+    </resultMap>
+
+    <select id="selectLog" resultMap="wmsOulogMap">
+        select * from wms_out_log where wms_doc_no=#{wmsDocNo}
+        <if test="erpDocNo!=null and erpDocNo!=''">
+            and erp_doc_no=#{erpDocNo}
+        </if>
+         order by act_time
+    </select>
+
+</mapper>

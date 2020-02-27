@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.pms.dao.PmsDictDao">
+
+    <insert id="sava">
+        INSERT into t_role_dict(role_id,dict_code) VALUES(#{roleId},#{org}),(#{roleId},#{roleType})
+    </insert>
+
+    <!--查询角色所属-->
+    <select id="queryOrg" resultType="com.cowain.pms.modules.pms.entity.PmsDictEntity">
+        SELECT *
+        FROM `t_dict` where type = 'ORG_TYPE'
+    </select>
+
+    <!--查询角色类型-->
+    <select id="queryRoleType" resultType="com.cowain.pms.modules.pms.entity.PmsDictEntity">
+        SELECT *
+        FROM `t_dict` where type = 'ROLE_TYPE'
+    </select>
+
+    <select id="querySingleRoleType" resultType="com.cowain.pms.modules.pms.entity.PmsDictEntity">
+       SELECT
+            `explain`
+        FROM
+            t_dict
+        WHERE
+	CODE = ( SELECT t1.dict_code FROM t_role_dict t1 WHERE #{roleId} = t1.role_id AND t1.dict_code = #{type} )
+    </select>
+
+    <select id="querySingleOrg" resultType="com.cowain.pms.modules.pms.entity.PmsDictEntity">
+     SELECT `explain`FROM t_dict  WHERE
+     CODE =( SELECT t.dict_code FROM t_role_dict t WHERE t.role_id = #{roleId} AND t.dict_code = #{org} )
+    </select>
+
+    <select id="queryRole" resultType="java.lang.Integer">
+        SELECT COUNT(role_id) FROM t_role_dict where role_id = #{roleId}
+    </select>
+
+    <insert id="saveOrUpdate">
+         INSERT into t_role_dict(role_id,dict_code) VALUES(#{roleId},#{subordinate}),(#{roleId},#{roleType})
+    </insert>
+
+    <delete id="deleteRoleId">
+        DELETE from t_role_dict where role_id = #{roleId}
+    </delete>
+
+</mapper>
+

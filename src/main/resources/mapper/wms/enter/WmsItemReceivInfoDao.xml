@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.enterdao.WmsItemReceivInfoDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.enterentity.WmsItemReceivInfoEntity" id="wmsItemReceivInfoMap">
+        <result property="id" column="id"/>
+        <result property="requestId" column="request_id"/>
+        <result property="globalId" column="global_id"/>
+        <result property="itemCode" column="item_code"/>
+        <result property="itemNum" column="item_num"/>
+        <result property="itemStatus" column="item_status"/>
+        <result property="insertTime" column="insert_time"/>
+    </resultMap>
+
+    <update id="updateItemStatus">
+        update wms_item_receiv_info set item_status=0 where wms_doc_no=#{wmsDocNo} and item_sn=#{itemSn}
+    </update>
+
+</mapper>

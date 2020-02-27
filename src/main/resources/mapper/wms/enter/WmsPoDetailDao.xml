@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.enterdao.WmsPoDetailDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.enterentity.WmsPoDetailEntity" id="wmsPoDetailMap">
+        <result property="id" column="id"/>
+        <result property="poCode" column="po_code"/>
+        <result property="docType" column="doc_type"/>
+        <result property="lineNo" column="line_no"/>
+        <result property="lineSn" column="line_sn"/>
+        <result property="itemId" column="item_id"/>
+        <result property="itemCode" column="item_code"/>
+        <result property="itemDesc" column="item_desc"/>
+        <result property="itemSpec" column="item_spec"/>
+        <result property="itemName" column="item_name"/>
+        <result property="itemUnit" column="item_unit"/>
+        <result property="applyItemNum" column="apply_item_num"/>
+        <result property="itemNum" column="item_num"/>
+        <result property="addItemNum" column="add_item_num"/>
+        <result property="projectId" column="project_id"/>
+        <result property="projectName" column="project_name"/>
+        <result property="supplyId" column="supply_id"/>
+        <result property="supplyName" column="supply_name"/>
+        <result property="sourceReceivDocNo" column="source_receiv_doc_no"/>
+        <result property="positionCode" column="position_code"/>
+        <result property="endDate" column="end_date"/>
+        <result property="status" column="status"/>
+        <result property="bizPerson" column="biz_person"/>
+    </resultMap>
+
+    <select id="selectItem" parameterType="com.cowain.pms.modules.wms.entity.enterentity.WmsItemReceivInfoEntity" resultMap="wmsPoDetailMap">
+        select a.* from wms_po_detail a,wms_po b where b.po_code=#{poCode} and b.status=1 and
+        a.po_code=b.po_code and a.line_no=#{lineNo} and a.item_code=#{itemCode}
+    </select>
+    <select id="pageList" resultMap="wmsPoDetailMap">
+        SELECT * FROM wms_po_detail a
+        where  1=1
+        <if test="poCode!=null and poCode!=''">
+            and a.po_code=#{poCode}
+        </if>
+    </select>
+
+    <update id="updateItemNum">
+        update wms_po_detail set item_num=IfNULL(item_num,0)+#{itemNum} where id=#{id}
+    </update>
+
+    <update id="decreaseItemNum">
+        update wms_po_detail set item_num=ifNull(item_num,0)-#{itemNum} where po_code=#{poCode}
+        and line_no=#{lineNo} and item_code=#{itemCode}
+    </update>
+
+</mapper>

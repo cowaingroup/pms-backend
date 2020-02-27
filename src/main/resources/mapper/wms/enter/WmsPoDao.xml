@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.enterdao.WmsPoDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.enterentity.WmsPoEntity" id="wmsPoMap">
+        <result property="id" column="id"/>
+        <result property="bizPerson" column="biz_person"/>
+        <result property="docTypeCode" column="doc_type_code"/>
+        <result property="docTypeName" column="doc_type_name"/>
+        <result property="createTime" column="create_time"/>
+        <result property="poCode" column="po_code"/>
+        <result property="supplyId" column="supply_id"/>
+        <result property="supplyName" column="supply_name"/>
+        <result property="status" column="status"/>
+    </resultMap>
+    <select id="updateByStatus" resultMap="wmsPoMap">
+        select * from wms_po where po_code = #{poCode}
+    </select>
+    <select id="poPageList" resultMap="wmsPoMap">
+        SELECT * FROM wms_po a
+        where  1=1
+        <if test="map.poCode!=null and map.poCode!=''">
+            and a.po_code=#{map.poCode}
+        </if>
+        <if test="map.docTypeCode!=null and map.docTypeCode!=''">
+            and a.doc_type_code=#{map.docTypeCode}
+        </if>
+        <if test="map.supplyId!=null and map.supplyId!=''">
+            and a.supply_id=#{map.supplyId}
+        </if>
+        order by a.create_time desc
+    </select>
+</mapper>

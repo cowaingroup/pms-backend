@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.outerdao.WmsLoadingDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.outerentity.WmsLoadingEntity" id="wmsLoadingMap">
+        <result property="id" column="id"/>
+        <result property="loadingNumber" column="loading_number"/>
+        <result property="userId" column="user_id"/>
+        <result property="phone" column="phone"/>
+        <result property="licensePlate" column="license_plate"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+    <select id="loadingPageList" resultMap="wmsLoadingMap">
+        SELECT * FROM wms_loading a
+        where  1=1
+        <if test="map.loadingNumber!=null and map.loadingNumber!=''">
+            and a.loading_number=#{map.loadingNumber}
+        </if>
+        <if test="map.createTime!=null and map.createTime!=''">
+            and DATE_FORMAT(a.create_time,"%Y-%m-%d")= STR_TO_DATE(#{map.createTime},"%Y-%m-%d")
+        </if>
+        order by a.create_time desc
+    </select>
+    <select id="getMaxEntityOfDocNoByDate" resultMap="wmsLoadingMap">
+        select *  from wms_loading t where 1=1 order by t.create_time desc limit 1
+    </select>
+    <update id="updateByLoading" >
+        update wms_loading a
+        <set >
+            <if test="userId != null and userId!=''" >
+                a.user_id = #{userId},
+            </if>
+            <if test="phone != null and phone!=''" >
+                a.phone = #{phone},
+            </if>
+            <if test="licensePlate != null and licensePlate!=''" >
+                a.license_plate = #{licensePlate},
+            </if>
+        </set>
+        where a.id = #{id}
+    </update>
+    <delete id="delectByLoadingNumber">
+        DELETE FROM wms_loading WHERE loading_number  = #{loadingNumber}
+    </delete>
+</mapper>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.enterdao.WmsQulityCheckDocDetailDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.enterentity.WmsQulityCheckDocDetailEntity" id="wmsQulityCheckDocDetailMap">
+        <result property="id" column="id"/>
+        <result property="checkId" column="check_id"/>
+        <result property="itemId" column="item_id"/>
+        <result property="itemCode" column="item_code"/>
+        <result property="itemSn" column="item_sn"/>
+        <result property="globalId" column="global_id"/>
+        <result property="itemName" column="item_name"/>
+        <result property="itemNum" column="item_num"/>
+        <result property="insertTime" column="insert_time"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <select id="selectByGlobalId" parameterType="com.cowain.pms.modules.wms.entity.enterentity.WmsReceivDocDetailEntity" resultMap="wmsQulityCheckDocDetailMap">
+        select * from wms_qulity_check_doc_detail a where a.item_code=#{itemCode} and a.global_id=#{globalId} and a.item_sn=#{itemSn}
+    </select>
+
+    <select id="selectByRecive" resultMap="wmsQulityCheckDocDetailMap">
+        select b.* from wms_qulity_check_doc a, wms_qulity_check_doc_detail b
+        where a.wms_doc_no=#{wmsDocNo} and a.global_id=#{globalId}
+        and a.global_id=b.global_id and b.check_id=a.id
+    </select>
+</mapper>

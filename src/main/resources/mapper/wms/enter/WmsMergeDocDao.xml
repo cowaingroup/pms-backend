@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.enterdao.WmsMergeDocDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.enterentity.WmsMergeDocEntity" id="wmsMergeDocMap">
+        <result property="id" column="id"/>
+        <result property="mergeNo" column="merge_no"/>
+        <result property="docType" column="doc_type"/>
+        <result property="createTime" column="create_time"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <select id="selectPreSum" resultType="java.lang.Integer">
+        select  ifnull(sum(b.item_num),0) from wms_merge_detail a,wms_in_doc_detail b
+        where a.merge_id=#{id} and a.global_id=b.global_id
+    </select>
+
+    <select id="selectAcceptSum" resultType="java.lang.Integer">
+       select ifnull(sum(b.item_actual_num),0) from wms_merge_detail a,wms_doc_act b
+       where a.merge_id=#{id} and a.global_id=b.global_id
+    </select>
+
+    <select id="PageList" resultMap="wmsMergeDocMap">
+        select DISTINCt(a.merge_no),a.id from wms_merge_doc a,wms_merge_detail b where 1=1 and
+        b.merge_id=a.id
+         <if test="map.wmsDocNo!=null and map.wmsDocNo!=''">
+         and b.wms_doc_no=#{map.wmsDocNo}
+          </if>
+        <if test="map.erpDocNo!=null and map.erpDocNo!=''">
+            and b.erp_doc_no=#{map.erpDocNo}
+        </if>
+    </select>
+
+    <select id="getMaxEntityOfDocNoByDate" resultMap="wmsMergeDocMap">
+        select * from wms_merge_doc order by create_time desc limit 1
+    </select>
+</mapper>

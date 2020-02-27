@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.outerdao.WmsErpOudetailDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.outerentity.WmsErpOuinfoEntity" id="wmsErpOudetailMap">
+        <result property="id" column="id"/>
+        <result property="wmsDocNo" column="wms_doc_no"/>
+        <result property="itemCode" column="item_code"/>
+        <result property="shippedNum" column="shipped_num"/>
+        <result property="projectId" column="project_id"/>
+        <result property="boxCode" column="box_code"/>
+        <result property="createTime" column="create_time"/>
+        <result property="userId" column="user_id"/>
+    </resultMap>
+
+
+</mapper>

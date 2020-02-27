@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.WmsShelfRuleDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.WmsShelfRuleEntity" id="wmsShelfRuleMap">
+        <result property="id" column="id"/>
+        <result property="ownerCode" column="owner_code"/>
+        <result property="houseBasic" column="house_basic"/>
+        <result property="areaBasic" column="area_basic"/>
+        <result property="goodsBasic" column="goods_basic"/>
+        <result property="randomBasic" column="random_basic"/>
+        <result property="intelligentBasic" column="intelligent_basic"/>
+    </resultMap>
+
+
+</mapper>

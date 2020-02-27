@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.outerdao.WmsTaskDetailDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.outerentity.WmsTaskDetailEntity" id="wmsTaskDetailMap">
+        <result property="id" column="id"/>
+        <result property="taskId" column="task_id"/>
+        <result property="wmsDocNo" column="wms_doc_no"/>
+        <result property="erpDocNo" column="erp_doc_no"/>
+        <result property="packNo" column="pack_no"/>
+        <result property="itemCode" column="item_code"/>
+        <result property="itemName" column="item_name"/>
+        <result property="itemSpec" column="item_spec"/>
+        <result property="itemDesc" column="item_desc"/>
+        <result property="itemUnitCode" column="item_unit_code"/>
+        <result property="itemNum" column="item_num"/>
+        <result property="itemPickNum" column="item_pick_num"/>
+        <result property="itemReviewNum" column="item_review_num"/>
+        <result property="itemStatus" column="item_status"/>
+        <result property="userId" column="user_id"/>
+        <result property="pickTime" column="pick_time"/>
+        <result property="palletNumber" column="pallet_number"/>
+        <result property="createTime" column="create_time"/>
+        <result property="loadingNumber" column="loading_number"/>
+        <result property="addressName" column="address_name"/>
+    </resultMap>
+
+    <select id="getDetailByParam" resultMap="wmsTaskDetailMap">
+        select * from wms_task_detail where task_id=#{taskId}
+    </select>
+
+    <select id="getDetailByDoc" resultMap="wmsTaskDetailMap">
+        select a.* from wms_task_detail a,wms_pick_task b where a.task_id=b.id
+        <if test="taskNo!=null and taskNo!=''">
+            and b.task_no=#{taskNo}
+        </if>
+        <if test="wmsDocNo!=null and wmsDocNo!=''">
+            and b.wms_doc_no=#{wmsDocNo}
+        </if>
+        <if test="bcNo!=null and bcNo!=''">
+            and b.bc_no=#{bcNo}
+        </if>
+        <if test="itemSn!=null and itemSn!=''">
+            and a.item_sn=#{itemSn}
+        </if>
+        group by a.id
+    </select>
+
+    <delete id="deleteByTask">
+        delete from  wms_task_detail a where task_id=(select id from wms_pick_task where out_id=#{outId})
+    </delete>
+    <select id="selectByPackNo" resultMap="wmsTaskDetailMap">
+        select *  from wms_task_detail t where t.wms_doc_no = #{wmsDocNo}
+    </select>
+    <select id="printBox" resultMap="wmsTaskDetailMap">
+    SELECT  a.user_id,c.cust_name,a.item_code,a.item_desc,
+    a.project_name,ifnull(a.item_num,0) as item_num, a.wms_doc_no,a.erp_doc_no
+    FROM wms_task_detail a RIGHT JOIN wms_out_pack c ON a.pack_no = c.pack_no
+    WHERE a.pack_no = #{packNo}
+    </select>
+    <select id="getPallet" resultMap="wmsTaskDetailMap">
+        SELECT a.* FROM wms_task_detail a
+        LEFT JOIN wms_pallet b on a.pallet_number = b.pallet_number
+        WHERE a.pallet_number=#{palletNumber}
+        <if test="packNo!=null and packNo!=''">
+            and a.pack_no=#{packNo}
+        </if>
+    </select>
+    <select id="getLoading" resultMap="wmsTaskDetailMap">
+        SELECT c.*,d.cust_name,d.create_time,ifnull(d.item_num,0) as item_num FROM wms_loading a RIGHT JOIN wms_pallet b ON a.loading_number = b.loading_number
+        RIGHT JOIN wms_task_detail c ON b.pallet_number = c.pallet_number
+        LEFT JOIN wms_out_pack d ON c.pack_no = d.pack_no
+        WHERE a.loading_number  =#{loadingNumber}
+        <if test="palletNumber!=null and palletNumber!=''">
+            and c.pallet_number=#{palletNumber}
+        </if>
+    </select>
+    <select id="printPallet"  resultMap="wmsTaskDetailMap">
+        SELECT a.pallet_number,a.pallet_time as create_time,a.user_id,
+        c.cust_name,c.item_num,
+        b.*
+         FROM wms_pallet a LEFT JOIN wms_task_detail b on a.pallet_number = b.pallet_number
+        LEFT JOIN wms_out_pack c ON b.pack_no = c.pack_no
+        WHERE b.pallet_number = #{palletNumber}
+    </select>
+    <select id="printLoding"  resultMap="wmsTaskDetailMap">
+        SELECT d.create_time,d.license_plate,d.user_id,d.phone,d.loading_number,
+        e.cust_name,e.address_name,c.item_num,
+        b.*
+         FROM wms_loading d LEFT JOIN
+        wms_pallet a ON d.loading_number = a.loading_number
+        right JOIN wms_task_detail b on a.pallet_number = b.pallet_number
+        LEFT JOIN wms_out_pack c ON b.pack_no = c.pack_no
+        LEFT JOIN wms_pick_task f ON b.task_id = f.id
+        LEFT JOIN wms_erp_main e ON f.task_no = e.task_no
+        WHERE d.loading_number=#{loadingNumber}
+    </select>
+    <select id="getNotPackNo" resultMap="wmsTaskDetailMap">
+        SELECT DISTINCT(a.pack_no) FROM
+        wms_out_pack a right JOIN wms_task_detail b ON a.pack_no = b.pack_no
+        WHERE (ISNULL(b.pallet_number) OR b.pallet_number='') and  a.pack_no is not NULL ;
+    </select>
+    <update id="updateByPackNo" parameterType="java.util.List">
+        update wms_task_detail a
+        <set >
+            a. pallet_number =#{palletNumber}
+        </set>
+        where a.pack_no in
+        <foreach collection="list" index="index" item="packNo" open="("
+                 separator="," close=")">
+            #{packNo}
+        </foreach>
+    </update>
+    <update id="delectPalletNumber">
+        update wms_task_detail a
+        <set >
+            a. pallet_number =""
+        </set>
+        where a.pallet_number = #{palletNumber}
+    </update>
+    <select id="selectByPackNo" resultMap="wmsTaskDetailMap">
+        select * from wms_task_detail where pack_no=#{packNo}
+    </select>
+</mapper>

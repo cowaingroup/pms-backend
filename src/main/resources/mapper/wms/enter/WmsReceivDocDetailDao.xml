@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.enterdao.WmsReceivDocDetailDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.enterentity.WmsReceivDocDetailEntity" id="wmsReceivDocDetailMap">
+        <result property="id" column="id"/>
+        <result property="receivId" column="receiv_id"/>
+        <result property="supplyId" column="supply_id"/>
+        <result property="supplyName" column="supply_name"/>
+        <result property="poCode" column="po_code"/>
+        <result property="itemId" column="item_id"/>
+        <result property="itemCode" column="item_code"/>
+        <result property="itemName" column="item_name"/>
+        <result property="itemDesc" column="item_desc"/>
+        <result property="itemUnit" column="item_unit"/>
+        <result property="itemNum" column="item_num"/>
+        <result property="deliverType" column="deliver_type"/>
+        <result property="projectId" column="project_id"/>
+        <result property="projectName" column="project_name"/>
+        <result property="insertTime" column="insert_time"/>
+        <result property="itemSpec" column="item_spec"/>
+        <result property="erpStatus" column="erp_status"/>
+    </resultMap>
+
+    <select id="selectReceivDocInfo" resultMap="wmsReceivDocDetailMap"
+            parameterType="com.cowain.pms.modules.wms.entity.enterentity.WmsQulityCheckDocDetailEntity">
+        select a.* from wms_receiv_doc_detail a,wms_receiv_doc b where b.wms_doc_no=#{wmsDocNo}
+        and b.id=a.receiv_id  and a.item_sn=#{itemSn}
+        <if test="itemCode!=null and itemCode!=''">
+            and a.item_code=#{itemCode}
+        </if>
+        <if test="globalId!=null and globalId!=''">
+            and a.global_id=#{globalId} and b.global_id=#{globalId}
+        </if>
+    </select>
+
+    <select id="getDetailByDoc" resultMap="wmsReceivDocDetailMap"
+            parameterType="com.cowain.pms.modules.wms.entity.enterentity.WmsQulityCheckDocEntity">
+        select a.* from wms_receiv_doc_detail a,wms_receiv_doc b where b.wms_doc_no=#{wmsDocNo}
+        and b.id=a.receiv_id
+        <if test="globalId!=null and globalId!=''">
+            and a.global_id=#{globalId} and b.global_id=#{globalId}
+        </if>
+    </select>
+
+    <select id="getDetailByGobalId" resultMap="wmsReceivDocDetailMap">
+         select a.* from wms_receiv_doc_detail a where a.global_id=#{globalId}
+    </select>
+
+    <select id="getDetailByParam" resultMap="wmsReceivDocDetailMap">
+        select t.*,a.erp_status from wms_receiv_doc_detail t,wms_receiv_doc a where
+        t.receiv_id=#{receiveId} and a.id=t.receiv_id
+        <if test="globalId!=null and globalId!=''">
+            and t.global_id=#{globalId}
+        </if>
+        <if test="itemCode!=null and itemCode!=''">
+            and t.item_code=#{itemCode}
+        </if>
+    </select>
+
+    <select id="getPdaAddItem" resultMap="wmsReceivDocDetailMap">
+        select t.* from wms_receiv_doc_detail t where
+        t.receiv_id=#{receivId}
+        <if test="itemSn!=null and itemSn!=''">
+            and t.item_sn=#{itemSn}
+        </if>
+    </select>
+
+    <select id="getDetailByPrinter" resultMap="wmsReceivDocDetailMap">
+        select t.*,b.wms_doc_no as wmsDocNo,b.doc_type as docType from wms_receiv_doc_detail t ,wms_receiv_doc b
+        where t.receiv_id=#{receiveId} AND b.id = t.receiv_id;
+    </select>
+
+    <delete id="deleteBySn">
+        delete from wms_receiv_doc_detail where receiv_id=#{receivId} and item_sn=#{itemSn}
+    </delete>
+</mapper>

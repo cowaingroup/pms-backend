@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.enterdao.WmsInDocDetailDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.enterentity.WmsInDocDetailEntity" id="wmsInDocDetailMap">
+        <result property="id" column="id"/>
+        <result property="inDocId" column="in_doc_id"/>
+        <result property="globalId" column="global_id"/>
+        <result property="supplyId" column="supply_id"/>
+        <result property="supplyName" column="supply_name"/>
+        <result property="poCode" column="po_code"/>
+        <result property="prCode" column="pr_code"/>
+        <result property="itemId" column="item_id"/>
+        <result property="itemSn" column="item_sn"/>
+        <result property="itemCode" column="item_code"/>
+        <result property="itemDesc" column="item_desc"/>
+        <result property="itemNum" column="item_num"/>
+        <result property="itemUnit" column="item_unit"/>
+        <result property="deliverType" column="deliver_type"/>
+        <result property="projectId" column="project_id"/>
+        <result property="projectName" column="project_name"/>
+        <result property="insertTime" column="insert_time"/>
+        <result property="itemSpec" column="item_spec"/>
+    </resultMap>
+
+    <select id="selectItemByAct" resultMap="wmsInDocDetailMap">
+        select a.* from wms_in_doc_detail a,wms_in_doc b where a.global_id=#{globalId}
+        and a.item_code=#{itemCode} and a.item_sn=#{itemSn} and a.in_doc_id=b.id and b.wms_doc_no=#{wmsDocNo}
+    </select>
+
+    <select id="selectNumByDoc" resultType="java.lang.Integer">
+        select IFNULL(sum(a.item_num),0) from wms_in_doc_detail a,wms_in_doc b where b.wms_doc_no=#{wmsDocNo} and a.in_doc_id=b.id
+    </select>
+
+    <select id="getDetailByDoc" resultMap="wmsInDocDetailMap">
+        select * from wms_in_doc_detail where 1=1
+        <if test="inDocId!=null and inDocId!=''">
+        and in_doc_id=#{inDocId}
+        </if >
+        <if test="globalId!=null and globalId!=''">
+            and global_id=#{globalId}
+        </if>
+        <if test="itemCode!=null and itemCode!=''">
+            and item_code=#{itemCode}
+        </if>
+        <if test="itemSn!=null and itemSn!=''">
+            and item_sn=#{itemSn}
+        </if>
+    </select>
+    <select id="getDetailByPrinter" resultMap="wmsInDocDetailMap">
+        SELECT
+        c.item_actual_box as position_code,
+        a.item_code,
+        a.item_desc,
+        a.project_name,
+        a.pre_num,
+        a.item_unit,
+        IFNULL(b.wms_doc_no,'') as wmsDocNo,IFNULL(b.erp_doc_no,'') as erpDocNo,
+        IFNULL(c.item_actual_num,0) as actualNum,b.doc_type as waitNum,b.wms_status
+         FROM wms_in_doc_detail a
+         LEFT JOIN wms_in_doc b ON a.in_doc_id = b.id
+        LEFT JOIN
+        (SELECT SUM(t.item_actual_num) as item_actual_num,t.parent_id,t.item_actual_box
+        FROM wms_doc_act t GROUP BY t.parent_id ) c ON a.id = c.parent_id
+        WHERE a.in_doc_id = #{inDocId}
+    </select>
+</mapper>

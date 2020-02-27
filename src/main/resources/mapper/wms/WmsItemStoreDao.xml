@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.WmsItemStoreDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.WmsItemStoreEntity" id="wmsItemStoreMap">
+        <result property="id" column="id"/>
+        <result property="itemCode" column="item_code"/>
+        <result property="projectId" column="project_id"/>
+        <result property="itemNum" column="item_num"/>
+        <result property="itemLock" column="item_lock"/>
+        <result property="itemLeft" column="item_left"/>
+    </resultMap>
+
+    <select id="itemExist" resultMap="wmsItemStoreMap">
+        select * from wms_item_store where item_code=#{itemCode} and project_id=#{projectId}
+    </select>
+
+    <update id="lockStore">
+        update wms_item_store set item_lock=ifnull(item_lock,0)+#{itemNum},item_left=item_num-ifnull(item_lock,0)
+        where item_code=#{itemCode} and project_id=#{projectId}
+    </update>
+
+    <update id="decreseStore">
+        update wms_item_store set item_num=ifnull(item_num,0)-#{itemNum},item_lock=ifnull(item_lock,0)-#{itemNum},item_left=item_num-ifnull(item_lock,0)
+        where item_code=#{itemCode} and project_id=#{projectId}
+    </update>
+
+    <update id="addStore">
+        update wms_item_store set item_lock=ifnull(item_lock,0)-#{itemNum},item_left=item_num-ifnull(item_lock,0)
+        where item_code=#{itemCode} and project_id=#{projectId}
+    </update>
+</mapper>

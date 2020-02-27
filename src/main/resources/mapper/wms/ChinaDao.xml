@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.ChinaDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.ChinaEntity" id="chinaMap">
+        <result property="id" column="Id"/>
+        <result property="name" column="Name"/>
+        <result property="pid" column="Pid"/>
+        <result property="level" column="level"/>
+        <result property="sort" column="sort"/>
+    </resultMap>
+
+    <select id="queryArea" resultMap="chinaMap">
+        select * from t_china where pid=#{0}
+    </select>
+
+
+    <select id="queryAllArea" resultMap="chinaMap">
+        select * from t_china
+    </select>
+
+</mapper>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.WhLocationDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.WhLocationEntity" id="whLocationMap">
+        <result property="id" column="id"/>
+        <result property="whLocationCode" column="wh_location_code"/>
+        <result property="whId" column="wh_id"/>
+        <result property="whAreaId" column="wh_area_id"/>
+        <result property="whLocationStatus" column="wh_location_status"/>
+        <result property="insertTime" column="insert_time"/>
+        <result property="whLocationType" column="wh_location_type"/>
+        <result property="whDistance" column="wh_distance"/>
+    </resultMap>
+    <select id ="palletPageList" resultMap="whLocationMap">
+        SELECT a.id,
+        a.wh_location_code,
+        e.area_name as wh_id,
+        f.house_name as wh_area_id,
+        b.name as wh_location_status,
+        a.remarks,
+        c.name as wh_location_type,
+        a.insert_time,
+        a.wh_distance
+        FROM t_wh_location a left join  t_dict b on a.wh_location_status = b.code
+        left join t_dict c on a.wh_location_type = c.id
+        LEFT JOIN t_wh_area e ON a.wh_area_id = e.id
+        LEFT JOIN t_warehouse f on a.wh_id = f.id
+        where 1=1
+        <if test="map.key!=null and map.key!=''">
+            and a.wh_location_code= #{map.key}
+        </if>
+        order by a.insert_time desc
+    </select>
+    <select id ="locationIsUses" resultType="java.lang.Integer">
+         SELECT lr.id FROM t_wh_location lr,wms_storage_record dr where lr.wh_location_code = dr.box_code AND lr.id in
+        <foreach item="Id" collection="array" open="(" separator="," close=")">
+            #{Id}
+        </foreach>
+    </select>
+
+    <insert id="insertLocationList" parameterType="java.util.List">
+        insert into t_wh_location (wh_location_code,wh_id,wh_area_id,wh_location_status,wh_location_type,remarks) values
+        <foreach collection="list" separator="," item="item" index="index">
+            (#{item.whLocationCode},#{item.whId},#{item.whAreaId},#{item.whLocationStatus},#{item.whLocationType},#{item.remarks})
+        </foreach>
+    </insert>
+
+    <select id="locationNameIsExist" resultType="java.lang.Integer">
+        select id from t_wh_location where wh_location_code=#{locationCode}
+    </select>
+
+    <select id="queryLoactionList" resultMap="whLocationMap">
+        select * from t_wh_location where 1=1
+        <if test="status!=null and status!=''">
+        and  wh_location_status=#{status}
+        </if>
+        order by wh_distance
+    </select>
+
+    <update id="updateLocationStatus">
+        update t_wh_location set wh_location_status=#{status}
+        where wh_location_code=#{whLocationCode}
+    </update>
+
+    <select id="queryAllocateLocation" resultMap="whLocationMap">
+        select b.* from t_wh_location b,t_wh_area c where b.wh_location_code=(select a.box_code
+        from wms_store_detail a where a.project_id=#{projectId} order by a.create_time desc limit 1)
+        and b.wh_location_status=#{status} and b.wh_area_id=c.id and c.area_code=#{areaCode}
+        order by b.wh_distance
+    </select>
+
+    <select id="queryFreeLocation" resultMap="whLocationMap">
+      select a.* from t_wh_location a,t_wh_area b
+      where a.wh_area_id=b.id
+      <if test="areaCode!=null and areaCode!=''">
+      and b.area_code=#{areaCode}
+      </if>
+      and a.wh_location_status=#{status} order by a.wh_distance
+    </select>
+</mapper>

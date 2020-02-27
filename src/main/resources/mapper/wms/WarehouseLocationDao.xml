@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.WarehouseLocationDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.WarehouseLocationEntity" id="warehouseLocationMap">
+        <result property="id" column="id"/>
+        <result property="code" column="code"/>
+        <result property="location" column="location"/>
+        <result property="type" column="type"/>
+        <result property="hight" column="hight"/>
+        <result property="weight" column="weight"/>
+        <result property="insertTime" column="insert_time"/>
+        <result property="insertUser" column="insert_user"/>
+        <result property="status" column="status"/>
+        <result property="name" column="name"/>
+        <result property="catetgoryType" column="catetgory_type"/>
+    </resultMap>
+
+
+
+
+</mapper>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.enterdao.WmsPublishTaskDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.enterentity.WmsPublishTaskEntity" id="wmsPublishTaskMap">
+        <result property="id" column="id"/>
+        <result property="taskNo" column="task_no"/>
+        <result property="wmsDocNo" column="wms_doc_no"/>
+        <result property="erpDocNo" column="erp_doc_no"/>
+        <result property="messageId" column="message_id"/>
+        <result property="type" column="type"/>
+        <result property="tableName" column="table_name"/>
+        <result property="tableId" column="table_id"/>
+        <result property="status" column="status"/>
+    </resultMap>
+    <select id="publishTaskPageList" resultMap="wmsPublishTaskMap">
+        SELECT * FROM wms_publish_task a
+        where  1=1
+        <if test="map.taskNo!=null and map.taskNo!=''">
+            and a.task_no=#{map.taskNo}
+        </if>
+        <if test="map.wmsDocNo!=null and map.wmsDocNo!=''">
+            and a.wms_doc_no=#{map.wmsDocNo}
+        </if>
+        <if test="map.erpDocNo!=null and map.erpDocNo!=''">
+            and a.erp_doc_no=#{map.erpDocNo}
+        </if>
+    </select>
+    <select id="getMaxEntityOfDocNoByDate" resultMap="wmsPublishTaskMap">
+        select * from wms_publish_task order by insert_time desc limit 1
+    </select>
+
+    <update id="updateDocStatus">
+        update ${tableName} set wcs_status=#{status} where id=#{tableId}
+    </update>
+
+    <select id="selectTaskByType" resultMap="wmsPublishTaskMap">
+        select *  from wms_publish_task where wms_doc_no=#{wmsDocNo} and type=#{type}
+    </select>
+
+    <select id="selectTaskByNo" resultMap="wmsPublishTaskMap">
+        select *  from wms_publish_task where task_no=#{taskNo}
+    </select>
+
+    <select id="selectPdaTask" resultMap="wmsPublishTaskMap">
+        select *  from wms_publish_task where type=#{type}
+            and status=#{status}
+        <if test="wmsDocNo!=null and wmsDocNo!=''">
+            and wms_doc_no=#{wmsDocNo}
+        </if>
+        <if test="claimUser!=null and claimUser!=''">
+           union all  select *  from wms_publish_task where type=#{type}
+            and status >#{status} and claim_user=#{claimUser}
+            <if test="wmsDocNo!=null and wmsDocNo!=''">
+                and wms_doc_no=#{wmsDocNo}
+            </if>
+        </if>
+    </select>
+
+    <update id="updateTaskLock">
+        update wms_publish_task set status=#{status},claim_user=#{claimUser} where id=#{id}
+    </update>
+    <select id="selectPublishTaskById" resultMap="wmsPublishTaskMap">
+        select * from wms_publish_task where id=#{id}
+    </select>
+</mapper>

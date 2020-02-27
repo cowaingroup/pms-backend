@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.enterdao.WmsReceivDocDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.enterentity.WmsReceivDocEntity" id="wmsReceivDocMap">
+        <result property="id" column="id"/>
+        <result property="globalId" column="global_id"/>
+        <result property="wmsDocNo" column="wms_doc_no"/>
+        <result property="erpDocNo" column="erp_doc_no"/>
+        <result property="insertTime" column="insert_time"/>
+        <result property="docType" column="doc_type"/>
+        <result property="wmsStatus" column="wms_status"/>
+        <result property="erpStatus" column="erp_status"/>
+    </resultMap>
+    <select id="recivPageList" resultMap="wmsReceivDocMap">
+        select a.*  from wms_receiv_doc a  left join wms_receiv_doc_detail b  on  a.id=b.receiv_id
+        where  1=1
+        <if test="map.docType!=null and map.docType!=''">
+            and a.doc_type=#{map.docType}
+        </if>
+        <if test="map.itemCode!=null and map.itemCode!=''">
+            and b.item_code=#{map.itemCode}
+        </if>
+         <if test="map.wmsDocNo!=null and map.wmsDocNo!=''">
+             and a.wms_doc_no=#{map.wmsDocNo}
+         </if>
+        <if test="map.supplyName!=null and map.supplyName!=''">
+            and a.supply_name=#{map.supplyName}
+        </if>
+        <if test="map.date!=null and map.date!=''">
+            and DATE_FORMAT(a.insert_time,"%Y-%m-%d")= STR_TO_DATE(#{map.date},"%Y-%m-%d")
+        </if>
+        group by a.id order by insert_time desc
+    </select>
+
+
+    <select id="getMaxEntityOfDocNoByDate" resultMap="wmsReceivDocMap">
+        select *  from wms_receiv_doc t where 1=1 and doc_type=#{type} order by t.insert_time desc limit 1
+    </select>
+
+    <select id="selectByDocNo" resultMap="wmsReceivDocMap">
+        select * from wms_receiv_doc where wms_doc_no=#{wmsDocNo}
+    </select>
+
+    <select id="getReciveDocList" resultMap="wmsReceivDocMap">
+        select *  from wms_receiv_doc t where doc_type=#{type}
+    </select>
+
+    <select id="getCheckTask" resultMap="wmsReceivDocMap">
+        select b.* from wms_publish_task a,wms_receiv_doc b where
+            a.type=#{docType} and a.table_id=b.id
+        <if test="wmsDocNo!=null and wmsDocNo!=''">
+            and a.wms_doc_no=#{wmsDocNo}
+        </if>
+            and a.`status`=#{status}
+        <if test="claimUser!=null and claimUser!=''">
+            union all  select b.* from wms_publish_task a,wms_receiv_doc b where
+            a.type=#{docType} and a.table_id=b.id
+            <if test="wmsDocNo!=null and wmsDocNo!=''">
+                and a.wms_doc_no=#{wmsDocNo}
+            </if>
+            and a.claim_user=#{claimUser} and a.`status`>#{status}
+        </if>
+
+    </select>
+
+
+
+</mapper>

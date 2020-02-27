@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.AgvDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.AgvEntity" id="agvMap">
+        <result property="id" column="id"/>
+        <result property="agvName" column="agv_name"/>
+        <result property="agvModel" column="agv_model"/>
+        <result property="vendor" column="vendor"/>
+        <result property="connectType" column="connect_type"/>
+        <result property="ip" column="ip"/>
+        <result property="port" column="port"/>
+        <result property="location" column="location"/>
+    </resultMap>
+
+
+</mapper>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.pms.dao.PmsRoleDao">
+    <update id="deleteRole">
+        update t_pms_role set `status` = 3 where role_id = #{id}
+    </update>
+
+    <select id="selectRolePageList" resultType="com.cowain.pms.modules.pms.dto.PmsRoleDto">
+        SELECT
+        t3.role_id,
+        t3.role_code,
+        t3.role_name,
+        COUNT(*)as 'count_num',
+        t3.`status`,
+        t4.`explain`as 'roleType',
+        t5.`explain`as 'orgType'
+        from t_pms_user t1
+        right JOIN t_pms_user_role t2 on  t1.user_id = t2.user_id
+        LEFT JOIN t_pms_role t3 ON t2.role_id = t3.role_id
+        LEFT JOIN t_dict t4 on t3.role_type = t4.`code`
+        LEFT JOIN t_dict t5 on t3.subordinate = t5.`code`
+         <where>
+             <if test="param.roleName!=null">
+                 AND t3.role_name = #{param.roleName}
+             </if>
+         </where>
+         GROUP BY t2.role_id
+    </select>
+
+    <select id="queryRoleNum" resultType="java.lang.Integer">
+        SELECT
+		COUNT( m.user_id ) as 'count_num'
+		FROM
+		( SELECT a.*, b.user_id FROM t_pms_role a LEFT JOIN t_pms_user_role b ON a.role_id = b.role_id and a.role_id = #{id}	) m
+    </select>
+
+    <update id="updateRole">
+       UPDATE t_pms_role set role_type = #{roleType} ,subordinate = #{subordinate}  where role_id = #{roleId};
+    </update>
+</mapper>

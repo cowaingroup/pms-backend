@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.outerdao.WmsOupackDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.outerentity.WmsOupackEntity" id="wmsOupackMap">
+        <result property="id" column="id"/>
+        <result property="packNo" column="pack_no"/>
+        <result property="createTime" column="create_time"/>
+        <result property="itemNum" column="item_num"/>
+        <result property="wmsDocNo" column="wms_doc_no"/>
+        <result property="erpDocNo" column="erp_doc_no"/>
+    </resultMap>
+
+    <select id="getMaxEntityOfDocNoByDate" resultMap="wmsOupackMap">
+        select *  from wms_out_pack t where 1=1 order by t.create_time desc limit 1
+    </select>
+    <select id="getOutPack" resultMap="wmsOupackMap">
+        select *  from wms_out_pack t where 1=1
+        <if test="packNo!=null and packNo!=''">
+            and pack_no = #{packNo}
+        </if>
+    </select>
+
+</mapper>

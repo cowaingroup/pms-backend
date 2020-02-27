@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.outerdao.WmsChangeDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.outerentity.WmsChangeEntity" id="wmsChangeMap">
+        <result property="id" column="id"/>
+        <result property="areaName" column="area_name"/>
+        <result property="erpDocNo" column="erp_doc_no"/>
+        <result property="areaCode" column="area_code"/>
+        <result property="status" column="status"/>
+        <result property="erpStatus" column="erp_status"/>
+        <result property="insertTime" column="insert_time"/>
+        <result property="docType" column="doc_type"/>
+        <result property="userName" column="user_name"/>
+    </resultMap>
+    <select id="changePageList" resultMap="wmsChangeMap">
+        SELECT * FROM wms_change a
+        where  1=1
+        <if test="map.erpDocNo!=null and map.erpDocNo!=''">
+            and a.erp_doc_no=#{map.erpDocNo}
+        </if>
+        order by a.insert_time desc
+    </select>
+
+</mapper>

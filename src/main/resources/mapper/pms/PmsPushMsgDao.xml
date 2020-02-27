@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.pms.dao.PmsPushMsgDao">
+
+
+        <select id="queryPushModes" resultType="com.cowain.pms.modules.pms.entity.PmsDictEntity">
+            SELECT * FROM `t_dict` where type = 'PUSH_MODE'
+        </select>
+        <select id="queryPushRanges" resultType="com.cowain.pms.modules.pms.entity.PmsDictEntity">
+            SELECT * FROM `t_dict` where type = 'PUSH_RANGE'
+        </select>
+        <select id="queryPushTimes" resultType="com.cowain.pms.modules.pms.entity.PmsDictEntity">
+            SELECT * FROM `t_dict` where type = 'PUSH_TIME'
+        </select>
+        <select id="queryPushWays" resultType="com.cowain.pms.modules.pms.entity.PmsDictEntity">
+            SELECT * FROM `t_dict` where type = 'PUSH_WAY'
+        </select>
+    <select id="selectAlarmPageList" resultType="com.cowain.pms.modules.pms.dto.PmsPushMsgDto">
+        select
+  m.id,
+  m.msg_type,
+  t1.`explain` 'pushModes',
+  t2.`explain` 'pushTimes',
+  t3.`explain` 'pushWays',
+  t4.`explain` 'pushRanges'
+  FROM (SELECT * from t_msg_rule) m
+  LEFT JOIN t_dict t1 on m.push_mode = t1.code
+  LEFT JOIN t_dict t2 on m.push_time = t2.code
+  LEFT JOIN t_dict t3 on m.push_way = t3.code
+  LEFT JOIN t_dict t4 on m.push_range = t4.code
+	ORDER BY m.id
+    </select>
+    <select id="queryPushMode" resultType="java.lang.Integer">
+         SELECT code FROM `t_dict` where `explain` = #{pushModes}
+    </select>
+
+    <select id="queryPushRange" resultType="java.lang.Integer">
+         SELECT code FROM `t_dict` where `explain` = #{pushRanges}
+    </select>
+
+    <select id="queryPushTime" resultType="java.lang.Integer">
+         SELECT code FROM `t_dict` where `explain` = #{pushTimes}
+    </select>
+    <select id="queryPushWay" resultType="java.lang.Integer">
+         SELECT code FROM `t_dict` where `explain` = #{pushWays}
+    </select>
+    <select id="queryMsgType" resultType="java.lang.Integer">
+         SELECT id FROM t_msg_rule where id = #{value}
+    </select>
+
+
+</mapper>

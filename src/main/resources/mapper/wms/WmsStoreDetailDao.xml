@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.WmsStoreDetailDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.WmsStoreDetailEntity" id="wmsStoreDetailMap">
+        <result property="id" column="id"/>
+        <result property="itemCode" column="item_code"/>
+        <result property="itemName" column="item_name"/>
+        <result property="itemSpec" column="item_spec"/>
+        <result property="itemDesc" column="item_desc"/>
+        <result property="itemUnitCode" column="item_unit_code"/>
+        <result property="itemNum" column="item_num"/>
+        <result property="lockNum" column="lock_num"/>
+        <result property="projectId" column="project_id"/>
+        <result property="projectName" column="project_name"/>
+        <result property="boxCode" column="box_code"/>
+    </resultMap>
+    <select id="pageList" resultMap="wmsStoreDetailMap">
+        SELECT
+        item_code,
+        item_sn,
+        item_name,
+        item_spec,
+        item_desc,
+        item_unit_code,
+        SUM(IFNULL(item_num,0)-IFNULL(lock_num,0)) as item_num,
+        box_code,
+        project_id,
+        project_name,
+        create_time
+        FROM
+        wms_store_detail
+        WHERE item_num>0
+        and item_num-ifnull(lock_num,0)>0
+        <if test="map.itemSpec =='item_code' and map.itemCode!=null and map.itemCode!=''">
+            and item_code like  concat('%',#{map.itemCode},'%')
+        </if>
+        <if test="map.itemSpec =='item_name' and map.itemCode!=null and map.itemCode!=''">
+            and item_name like  concat('%',#{map.itemCode},'%')
+        </if>
+        <if test="map.itemSpec =='box_code' and map.itemCode!=null and map.itemCode!=''">
+            and box_code like  concat('%',#{map.itemCode},'%')
+        </if>
+        GROUP BY item_code,box_code;
+    </select>
+
+    <select id="canAlloOut" resultMap="wmsStoreDetailMap">
+        select * from wms_store_detail a where a.item_num>0
+        and a.item_num-ifnull(a.lock_num,0)>0 and a.item_code=#{itemCode}
+        and a.project_id=#{projectId}
+    </select>
+
+    <update id="lockStoreDetail">
+        update wms_store_detail set lock_num=ifnull(lock_num,0)+#{lockNum} where id=#{id}
+    </update>
+
+    <select id="selectStore" resultMap="wmsStoreDetailMap">
+        select * from wms_store_detail a where
+        a.item_num>0 and a.item_num-ifnull(a.lock_num,0)>0
+        <if test="itemCode!=null and itemCode!=''">
+            and a.item_code  like "%"#{itemCode,jdbcType=VARCHAR}"%"
+        </if>
+        <if test="itemName!=null and itemName!=''">
+            and a.item_name  like "%"#{itemName,jdbcType=VARCHAR}"%"
+        </if>
+        <if test="boxCode!=null and boxCode!=''">
+            and a.box_code= #{boxCode}
+        </if>
+    </select>
+    <select id="selectStoreDetail" resultMap="wmsStoreDetailMap">
+        select * from wms_store_detail a where
+        a.item_num>0 and a.item_num-ifnull(a.lock_num,0)>0
+        and a.item_code = #{itemCode}
+        and a.item_name = #{itemName}
+        and a.box_code = #{boxCode}
+    </select>
+</mapper>

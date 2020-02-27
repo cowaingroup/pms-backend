@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.WhAreaDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.WhAreaEntity" id="whAreaMap">
+        <result property="id" column="id"/>
+        <result property="areaName" column="area_name"/>
+        <result property="areaCode" column="area_code"/>
+        <result property="whId" column="wh_id"/>
+        <result property="areaType" column="area_type"/>
+        <result property="mgrId" column="mgr_id"/>
+        <result property="mgrName" column="mgr_name"/>
+        <result property="mgrPhone" column="mgr_phone"/>
+        <result property="mgrEmail" column="mgr_email"/>
+        <result property="insertTime" column="insert_time"/>
+        <result property="locationCount" column="location_count"/>
+    </resultMap>
+    <select id="queryWareList"  resultMap="whAreaMap">
+		select * from t_wh_area
+	</select>
+    <select id="getAreaNameAll"  resultMap="whAreaMap">
+		select area_code, area_name from t_wh_area
+	</select>
+    <select id="WareAreaIsUse"  resultType="java.lang.Integer">
+        select distinct(a.id) from t_wh_area a,t_wh_location b
+        where b.wh_area_id=a.area_name and a.id in
+        <foreach item="areaId" collection="array" open="(" separator="," close=")">
+            #{areaId}
+        </foreach>
+    </select>
+    <select id="areaCodeIsUse" resultType="java.lang.Integer">
+        select id from t_wh_area where (area_code=#{areaCode} or area_name=#{areaName})
+        <if test="id!=null and id!=''">
+            and id!=#{id}
+        </if>
+    </select>
+    <select id="areaNameIsExist" resultType="java.lang.Integer">
+        select id from t_wh_area where area_name=#{areaName}
+    </select>
+</mapper>

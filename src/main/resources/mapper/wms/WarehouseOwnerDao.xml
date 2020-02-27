@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.WarehouseOwnerDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.WarehouseOwnerEntity" id="warehouseOwnerMap">
+        <result property="id" column="id"/>
+        <result property="ownerId" column="owner_id"/>
+        <result property="houseId" column="house_id"/>
+    </resultMap>
+
+    <delete id="deleteManagerWare">
+        delete from t_warehouse_owner where owner_id=#{ownerId}
+    </delete>
+
+    <select id="getHouseByOwnerId" resultType="java.lang.Long">
+        select house_id from t_warehouse_owner where owner_id=#{ownerId}
+    </select>
+
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.WmsStorageFlowDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.WmsStorageFlowEntity" id="wmsStorageFlowMap">
+        <result property="id" column="id"/>
+        <result property="docNoWms" column="doc_no_wms"/>
+        <result property="docNoErp" column="doc_no_erp"/>
+        <result property="flowType" column="flow_type"/>
+        <result property="actUser" column="act_user"/>
+        <result property="flowTime" column="flow_time"/>
+        <result property="dealType" column="deal_type"/>
+        <result property="itemCode" column="item_code"/>
+        <result property="houseType" column="house_type"/>
+        <result property="formerBox" column="former_box"/>
+        <result property="targetBox" column="target_box"/>
+        <result property="itemUnitCode" column="item_unit_code"/>
+        <result property="formerNum" column="former_num"/>
+        <result property="changeNum" column="change_num"/>
+    </resultMap>
+
+
+</mapper>

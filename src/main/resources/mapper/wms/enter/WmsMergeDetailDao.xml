@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.enterdao.WmsMergeDetailDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.enterentity.WmsMergeDetailEntity" id="wmsMergeDetailMap">
+        <result property="id" column="id"/>
+        <result property="mergeId" column="merge_id"/>
+        <result property="wmsDocNo" column="wms_doc_no"/>
+        <result property="erpDocNo" column="erp_doc_no"/>
+        <result property="docType" column="doc_type"/>
+        <result property="wmsStatus" column="wms_status"/>
+        <result property="erpStatus" column="erp_status"/>
+        <result property="globalId" column="global_id"/>
+        <result property="insertTime" column="insert_time"/>
+    </resultMap>
+
+    <select id="selectByMergeId" resultMap="wmsMergeDetailMap">
+        select *  from wms_merge_detail a where a.merge_id=#{mergeId}
+        <if test="wmsDocNo!=null and wmsDocNo!=''">
+            and wms_doc_no=#{wmsDocNo}
+        </if>
+        <if test="erpDocNo!=null and erpDocNo!=''">
+            and erp_doc_no=#{erpDocNo}
+        </if>
+        <if test="supplyName!=null and supplyName!=''">
+            and supply_name=#{supplyName}
+        </if>
+        <if test="date!=null and date!=''">
+           and DATE_FORMAT(insert_time,"%Y-%m-%d")= STR_TO_DATE(#{date},"%Y-%m-%d")
+        </if>
+    </select>
+
+</mapper>

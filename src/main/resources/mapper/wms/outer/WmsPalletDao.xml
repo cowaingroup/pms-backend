@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.outerdao.WmsPalletDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.outerentity.WmsPalletEntity" id="wmsPalletMap">
+        <result property="id" column="id"/>
+        <result property="palletNumber" column="pallet_number"/>
+        <result property="status" column="status"/>
+        <result property="userId" column="user_id"/>
+        <result property="loadingNumber" column="loading_number"/>
+        <result property="palletTime" column="pallet_time"/>
+    </resultMap>
+    <select id="palletPageList" resultMap="wmsPalletMap">
+        SELECT * FROM wms_pallet a
+    where  1=1
+    <if test="map.palletNumber!=null and map.palletNumber!=''">
+        and a.pallet_number=#{map.palletNumber}
+    </if>
+    <if test="map.palletTime!=null and map.palletTime!=''">
+        and DATE_FORMAT(a.pallet_time,"%Y-%m-%d")= STR_TO_DATE(#{map.palletTime},"%Y-%m-%d")
+    </if>
+     order by a.pallet_time desc
+    </select>
+    <select id="getMaxEntityOfDocNoByDate" resultMap="wmsPalletMap">
+        select *  from wms_pallet t where 1=1 order by t.pallet_time desc limit 1
+    </select>
+    <select id="getNotPalletNumber" resultMap="wmsPalletMap">
+        select DISTINCT(a.pallet_number)
+        from wms_pallet a where ISNULL(a.loading_number) OR a.loading_number='';
+    </select>
+    <select id="getPallet" resultMap="wmsPalletMap">
+        select *
+        from wms_pallet a where 1=1
+            and a.pallet_number=#{palletNumber}
+    </select>
+    <update id="updatePalletStatus">
+        UPDATE wms_pallet a SET a.`status` = 2 WHERE a.pallet_number = #{palletNumber}
+    </update>
+    <update id="updateByPalletNumber" parameterType="java.util.List">
+        update wms_pallet a
+        <set >
+            a. loading_number =#{loadingNumber}
+        </set>
+        where a.pallet_number in
+        <foreach collection="list" index="index" item="palletNumber" open="("
+                 separator="," close=")">
+            #{palletNumber}
+        </foreach>
+    </update>
+
+    <update id="delectLoadingNumber" parameterType="java.util.List">
+        update wms_pallet a
+        <set >
+            a. loading_number =" "
+        </set>
+        where a.loading_number  = #{loadingNumber}
+    </update>
+    <delete id="delectByPalletNumber">
+        DELETE FROM wms_pallet WHERE pallet_number  = #{palletNumber}
+    </delete>
+    <select id="selectByPallet" resultMap="wmsPalletMap">
+        SELECT * FROM wms_pallet a where a.pallet_number=#{palletNumber}
+    </select>
+</mapper>

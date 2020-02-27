@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.WmsMoveFormDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.WmsMoveFormEntity" id="wmsMoveFormMap">
+    <result property="id" column="id"/>
+    <result property="wmsMoveNo" column="wms_move_no"/>
+    <result property="erpMoveNo" column="erp_move_no"/>
+    <result property="docStatus" column="doc_status"/>
+    <result property="returnStatus" column="return_status"/>
+    <result property="createTime" column="create_time"/>
+    <result property="createUser" column="create_user"/>
+</resultMap>
+    <select id="selectDetail" resultType="com.cowain.pms.modules.wms.entity.WmsMoveDetailEntity">
+        select * from wms_move_detail where 1=1
+        <if test="id!=null and id!=''">
+           and parent_id=#{id}
+        </if>
+        <if test="itemCode!=null and itemCode!=''">
+            and item_code=#{itemCode}
+        </if>
+    </select>
+    <select id="findMaxMoveNo" resultType="com.cowain.pms.modules.wms.entity.WmsMoveFormEntity">
+          SELECT	 wms_move_no,	create_time
+        FROM	wms_move_form t
+        where wms_move_no is not null and wms_move_no != ''
+        ORDER BY	create_time desc  limit 1
+    </select>
+
+    <insert id="insertDetail" parameterType="java.util.List">
+        insert into wms_move_detail(parent_id,item_code,item_name,item_unit_code,item_predict_num,
+        item_finish_num,original_box_code,target_box_code) values
+        <foreach collection="list" item="item" index="index" separator=",">
+                (#{item.parentId},#{item.itemCode},#{item.itemName},#{item.itemUnitCode},#{item.itemPredictNum},
+            #{item.itemFinishNum},#{item.originalBoxCode},#{item.targetBoxCode})
+        </foreach>
+    </insert>
+</mapper>

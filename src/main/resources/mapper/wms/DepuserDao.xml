@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.DepuserDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.DepuserEntity" id="depuserMap">
+        <result property="id" column="id"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="mgrType" column="mgr_type"/>
+        <result property="status" column="status"/>
+        <result property="insertTime" column="insert_time"/>
+        <result property="insertUser" column="insert_user"/>
+    </resultMap>
+
+    <insert id="insertDepuser" parameterType="java.util.List">
+        insert into t_dept_user(dept_id,user_id,mgr_type,status,insert_time,insert_user) values
+        <foreach collection="list" item="item" index="index" separator=",">
+        (#{item.deptId},#{item.userId},#{item.mgrType},#{item.status},sysdate(),#{item.insertUser})
+    </foreach>
+    </insert>
+
+    <select id="queryByUserId"  resultType="java.lang.Integer">
+        select dept_id from t_dept_user t where t.user_id=#{userId}
+    </select>
+
+    <delete id="deleteByUserId">
+        delete from t_dept_user where user_id=#{userId}
+    </delete>
+
+    <delete id="deleteByUserIds">
+        delete from t_dept_user where user_id in
+        <foreach item="userId" collection="array" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+</mapper>

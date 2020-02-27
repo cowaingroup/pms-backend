@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.WmsAdjusformDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.WmsAdjusformEntity" id="wmsAdjusformMap">
+        <result property="id" column="id"/>
+        <result property="adjustDocNo" column="adjust_doc_no"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createUser" column="create_user"/>
+        <result property="taskStatus" column="task_status"/>
+        <result property="checkNo" column="check_no"/>
+        <result property="returnStatus" column="return_status"/>
+    </resultMap>
+
+    <select id="SelectAdjustForm" resultMap="wmsAdjusformMap">
+        select * from wms_adjust_form where 1=1
+        <if test="adjustDocNo!=null and adjustDocNo!=''">
+            and adjust_doc_no=#{adjustDocNo}
+        </if>
+        <if test="checkNo!=null and checkNo!=''">
+            and check_no=#{checkNo}
+        </if>
+        <if test="createTime!=null and createTime!=''">
+           and DATE_FORMAT(create_time,"%Y-%m-%d")= STR_TO_DATE(#{createTime},"%Y-%m-%d")
+        </if>
+    </select>
+
+    <select id="selAdjustDetail" resultType="com.cowain.pms.modules.wms.entity.WmsAdjusdetailEntity">
+        select * from wms_adjust_detail where parent_Id=#{pid} and isuse='1'
+    </select>
+
+    <update id="cancelAdjustDetail">
+        update wms_adjust_detail set isuse='0' where id=#{id}
+    </update>
+
+    <select id="findMaxAdjustNo" resultType="com.cowain.pms.modules.wms.entity.WmsAdjusformEntity">
+          SELECT	 adjust_doc_no,	create_time
+        FROM	wms_adjust_form t
+        where adjust_doc_no is not null and adjust_doc_no != ''
+        ORDER BY	create_time desc  limit 1
+    </select>
+</mapper>

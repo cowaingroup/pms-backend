@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.outerdao.WmsChangeDetailDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.outerentity.WmsChangeDetailEntity" id="wmsChangeDetailMap">
+        <result property="id" column="id"/>
+        <result property="changeId" column="change_id"/>
+        <result property="itemCode" column="item_code"/>
+        <result property="itemName" column="item_name"/>
+        <result property="itemNum" column="item_num"/>
+        <result property="preProjectId" column="pre_project_id"/>
+        <result property="preProjectName" column="pre_project_name"/>
+        <result property="targetProjectId" column="target_project_id"/>
+        <result property="targetProjectName" column="target_project_name"/>
+        <result property="lineNo" column="line_no"/>
+    </resultMap>
+    <select id="pageList" resultMap="wmsChangeDetailMap">
+        SELECT * FROM wms_change_detail a
+        where  1=1
+        <if test="changeId!=null and changeId!=''">
+            and a.change_id=#{changeId}
+        </if>
+    </select>
+
+</mapper>

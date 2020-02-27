@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.enterdao.WmsDocActDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.enterentity.WmsDocActEntity" id="wmsDocActMap">
+        <result property="id" column="id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="wmsDocNo" column="wms_doc_no"/>
+        <result property="itemName" column="item_name"/>
+        <result property="itemCode" column="item_code"/>
+        <result property="itemSn" column="item_sn"/>
+        <result property="itemTargetNum" column="item_target_num"/>
+        <result property="itemActualNum" column="item_actual_num"/>
+        <result property="itemUnitCode" column="item_unit_code"/>
+        <result property="itemTargetBox" column="item_target_box"/>
+        <result property="itemActualBox" column="item_actual_box"/>
+        <result property="actUser" column="act_user"/>
+        <result property="actTime" column="act_time"/>
+        <result property="itemStatus" column="item_status"/>
+        <result property="globalId" column="global_id"/>
+    </resultMap>
+
+    <select id="selectNumByDoc" resultType="java.lang.Integer">
+        select IFNULL(sum(a.item_actual_num),0) from wms_doc_act a where a.wms_doc_no=#{wmsDocNo}
+    </select>
+
+    <select id="selectActByDetail" resultMap="wmsDocActMap">
+        select * from wms_doc_act a  where a.parent_id=#{id} and a.item_code=#{itemCode}
+        and a.global_id=#{globalId} and a.item_sn=#{itemSn}
+    </select>
+</mapper>

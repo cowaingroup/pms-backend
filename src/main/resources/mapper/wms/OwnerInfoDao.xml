@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.OwnerInfoDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.OwnerInfoEntity" id="ownerInfoMap">
+        <result property="id" column="id"/>
+        <result property="ownerName" column="owner_name"/>
+        <result property="ownerCode" column="owner_code"/>
+        <result property="address" column="address"/>
+        <result property="contact" column="Contact"/>
+        <result property="phone" column="phone"/>
+        <result property="mail" column="mail"/>
+        <result property="industry" column="industry"/>
+    </resultMap>
+    <select id="queryOwnerList"  resultMap="ownerInfoMap">
+		select * from t_owner_info
+	</select>
+    <select id="getOwnerNameAll"  resultMap="ownerInfoMap">
+		select owner_code, owner_name from t_owner_info
+	</select>
+    <select id="ownerCodeIsUse" resultType="java.lang.Integer">
+        select a.id from t_owner_info a where (a.owner_code =#{ownerCode} or a.owner_name=#{ownerName})
+        <if test="id!=null and id!=''">
+            and a.id!=#{id}
+        </if>
+    </select>
+    <insert id="insertOwnerList" parameterType="java.util.List">
+        insert into t_owner_info(owner_name,owner_code,address,contact,phone,mail,industry) values
+        <foreach collection="list"  separator="," item="item">
+            (#{item.ownerName},#{item.ownerCode},#{item.address},#{item.contact},#{item.phone},#{item.mail},#{item.industry})
+        </foreach>
+
+    </insert>
+
+    <select id="getOwnerByHouse" resultMap="ownerInfoMap">
+        select a.* from t_owner_info a,t_warehouse_owner b where a.id=b.owner_id
+         and b.house_id in
+        <foreach collection="list" index="index" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </select>
+</mapper>

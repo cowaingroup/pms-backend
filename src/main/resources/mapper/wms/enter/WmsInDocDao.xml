@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.enterdao.WmsInDocDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.enterentity.WmsInDocEntity" id="wmsInDocMap">
+        <result property="id" column="id"/>
+        <result property="globalId" column="global_id"/>
+        <result property="wmsDocNo" column="wms_doc_no"/>
+        <result property="erpDocNo" column="erp_doc_no"/>
+        <result property="wmsStatus" column="wms_status"/>
+        <result property="erpStatus" column="erp_status"/>
+        <result property="insertTime" column="insert_time"/>
+        <result property="docType" column="doc_type"/>
+        <result property="sourceReceivDocNo" column="source_receiv_doc_no"/>
+        <result property="wmsReceivNo" column="wms_receiv_no"/>
+    </resultMap>
+
+    <select id="selectByDoc" resultMap="wmsInDocMap">
+        select * from wms_in_doc where 1=1
+        <if test="wmsDocNo!=null and wmsDocNo!=''">
+           and wms_doc_no=#{wmsDocNo}
+        </if>
+        <if test="globalId!=null and globalId!=''">
+            and global_id=#{globalId}
+        </if>
+        <if test="erpDocNo!=null and erpDocNo!=''">
+            and erp_doc_no=#{erpDocNo}
+        </if>
+    </select>
+
+
+    <select id="PageList" parameterType="com.cowain.pms.common.page.Page" resultMap="wmsInDocMap">
+        select a.*,c.wms_doc_no as wms_receiv_no from wms_in_doc a left join
+        wms_in_doc_detail b on b.in_doc_id=a.id left  join wms_receiv_doc c on a.global_id = c.global_id
+         where 1=1
+        <if test="map.wmsDocNo!=null and map.wmsDocNo!=''">
+            and a.wms_doc_no=#{map.wmsDocNo}
+        </if>
+        <if test="map.erpDocNo!=null and map.erpDocNo!=''">
+            and a.erp_doc_no=#{map.erpDocNo}
+        </if>
+        <if test="map.itemCode!=null and map.itemCode!=''">
+            and b.item_code = #{map.itemCode}
+        </if>
+        <if test="map.date!=null and map.date!=''">
+            and DATE_FORMAT(insert_time,"%Y-%m-%d")= STR_TO_DATE(#{map.date},"%Y-%m-%d")
+        </if>
+        group  by a.id order by insert_time desc
+    </select>
+
+    <select id="getMaxEntityOfDocNoByDate" resultMap="wmsInDocMap">
+        select * from wms_in_doc where doc_type=#{docType}
+        order by insert_time desc limit 1
+    </select>
+
+    <select id="selectByMerge" resultMap="wmsInDocMap">
+        select a.* from wms_in_doc a,wms_merge_doc b,wms_merge_detail c where b.merge_no=#{mergeNo}
+        and c.merge_id=b.id and c.wms_doc_no=a.wms_doc_no
+        <if test="globalId!=null and globalId!=''">
+        and c.global_id=a.global_id
+        </if>
+    </select>
+</mapper>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cowain.pms.modules.wms.dao.WmsPrinprocedureDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cowain.pms.modules.wms.entity.WmsPrinprocedureEntity" id="wmsPrinprocedureMap">
+        <result property="id" column="id"/>
+        <result property="supplier" column="supplier"/>
+        <result property="receivNo" column="receiv_no"/>
+        <result property="qulityCheckNo" column="qulity_check_no"/>
+        <result property="boxNo" column="box_no"/>
+        <result property="palletNo" column="pallet_no"/>
+        <result property="pickNo" column="pick_no"/>
+        <result property="outNo" column="out_no"/>
+        <result property="inNo" column="in_no"/>
+        <result property="loadingNo" column="loading_no"/>
+        <result property="creatTime" column="creat_time"/>
+    </resultMap>
+
+
+</mapper>
