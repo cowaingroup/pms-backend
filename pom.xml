@@ -46,7 +46,7 @@
 		<commons-lang3>3.6</commons-lang3>
 		<poi-excel>3.16</poi-excel>
 		<poi-ooxml>3.16</poi-ooxml>
-		<apach-pdf>2.0.6</apach-pdf>
+		<apach-pdf>2.0.24</apach-pdf>
 		<itex-pdf>5.4.0</itex-pdf>
 		<itext-asian>5.2.0</itext-asian>
 		<goole-zxing-core>3.3.0</goole-zxing-core>
