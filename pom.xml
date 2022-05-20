@@ -51,7 +51,7 @@
 		<itext-asian>5.2.0</itext-asian>
 		<goole-zxing-core>3.3.0</goole-zxing-core>
 		<goole-zxing-javase>3.3.0</goole-zxing-javase>
-		<goole-json>2.8.5</goole-json>
+		<goole-json>2.8.9</goole-json>
 		<fastclient.version>1.27-RELEASE</fastclient.version>
 
 	</properties>
