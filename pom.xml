@@ -47,7 +47,7 @@
 		<poi-excel>3.16</poi-excel>
 		<poi-ooxml>3.16</poi-ooxml>
 		<apach-pdf>2.0.6</apach-pdf>
-		<itex-pdf>5.4.0</itex-pdf>
+		<itex-pdf>5.5.12</itex-pdf>
 		<itext-asian>5.2.0</itext-asian>
 		<goole-zxing-core>3.3.0</goole-zxing-core>
 		<goole-zxing-javase>3.3.0</goole-zxing-javase>
